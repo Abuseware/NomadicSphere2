@@ -23,7 +23,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 #include <algorithm>
 
 #include "Database.h"
@@ -35,19 +34,16 @@ Database::Database(const std::string fileName) {
 Image Database::parseLine(const std::string location, const std::string line) {
     std::string swm, notes;
 
-    long split = line.find('_');
+    unsigned long split = line.find('_');
     if (split != std::string::npos) {
-        swm = line.substr(0, split);
-        notes = line.substr(split + 1);
+        swm = line.substr(0L, split);
+        notes = line.substr(split + 1UL);
         std::replace(notes.begin(), notes.end(), '-', ' ');
         std::replace(notes.begin(), notes.end(), '_', ';');
     } else {
         swm = line;
         notes = "";
     }
-
-    //std::cout << "Dodano: " << swm << " - " << notes << " @" << location << std::endl;
-
 
     return Image(swm, notes, location);
 }
@@ -69,7 +65,8 @@ bool Database::parseFile(const std::string fileName) {
 
     while (std::getline(file, line)) {
         line = line.substr(0, line.rfind('\r'));
-        imageList.push_back(parseLine(location, line));
+        if (!line.empty())
+            imageList.push_back(parseLine(location, line));
     }
 
     return true;

@@ -26,14 +26,24 @@
 
 #include <iostream>
 #include <iomanip>
-#include <algorithm>
 
 #include <dirent.h>
 
 #include "Image.h"
 #include "Database.h"
 
-static const std::string dataDir = "data";
+#define COLOR_NONE "\e[0m"
+#define COLOR_ERROR "\e[91m"
+#define COLOR_INFO "\e[93m"
+#define COLOR_QUERY "\e[32m"
+
+#define COLOR_LINE "\e[37m"
+
+#define COLOR_SWM "\e[31m"
+#define COLOR_LOC "\e[32m"
+#define COLOR_NOTE "\e[93m"
+
+const std::string dataDir = "data";
 
 Database db;
 
@@ -54,27 +64,36 @@ bool readDB() {
         std::sort(files.begin(), files.end());
         for (auto &file : files) {
             if (!db.parseFile(file)) {
-                std::cout << "Nie można odczytać pliku: " << file << std::endl;
+                std::cout << COLOR_ERROR << "Error while opening file " << file << COLOR_NONE << std::endl;
             }
         }
     } else {
-        std::cout << "Nie można odczytać katalogu bazy danych!" << std::endl;
+        std::cout << COLOR_ERROR << "No data available!" << COLOR_NONE << std::endl;
         return false;
     }
 
-    std::cout << "Wczytano " << db.size() << " rekordów." << std::endl;
+    std::cout << COLOR_INFO << "Loaded " << db.size() << " records." << COLOR_NONE << std::endl;
 
     return true;
 }
 
 int main() {
 
-    std::string breakLine = std::string(79, '-');
+    /* std::locale loc;     // initialized to locale::classic()
 
-    breakLine[0] = '+';
-    breakLine[20] = '+';
-    breakLine[33] = '+';
-    breakLine[78] = '+';
+    try {
+        loc = std::locale("pl_PL.UTF-8");
+    }
+    catch (std::runtime_error) {
+        loc = std::locale (loc, "", std::locale::ctype);
+    }
+
+    std::cout << "The selected locale is: " << loc.name() << '\n';
+    std::locale::global(loc);
+    std::wcout.imbue(loc);
+    std::wcout << L"Mąkę żytnią mielił ze zbóż" << std::endl; */
+
+    std::string breakLine = std::string(79, '-');
 
     if (!readDB()) {
         return 1;
@@ -82,17 +101,17 @@ int main() {
 
     while (true) {
         std::string query;
-        std::cout << ">> Podaj SWM: ";
+        std::cout << COLOR_QUERY ">> Search for: " << COLOR_NONE;
         std::getline(std::cin, query);
         if (query == "!q") {
             break;
         }
 
-        std::cout << breakLine << std::endl;
-        std::cout << "| " << std::setw(17) << "SWM";
-        std::cout << " | " << std::setw(13) << "Źródło";
-        std::cout << " | " << std::setw(42) << "Informacje";
-        std::cout << " |" << std::endl;
+        std::cout << COLOR_LINE << breakLine << COLOR_NONE << std::endl;
+        std::cout << COLOR_LINE << "| " << COLOR_NONE << std::setw(17) << "SWM";
+        std::cout << COLOR_LINE << " | " << COLOR_NONE << std::setw(10) << "Source";
+        std::cout << COLOR_LINE << " | " << COLOR_NONE << std::left << std::setw(42) << "Additional info" << std::right;
+        std::cout << COLOR_LINE << " |" << COLOR_NONE << std::endl;
         //std::cout << breakLine << std::endl;
 
         auto results = db.findImage(query);
@@ -102,18 +121,18 @@ int main() {
         for (auto &result : results) {
             if (lastSWM != result.getSwm()) {
                 lastSWM = result.getSwm();
-                std::cout << breakLine << std::endl;
+                std::cout << COLOR_LINE << breakLine << COLOR_NONE << std::endl;
             }
 
-            std::cout << "| " << std::setw(17) << result.getSwm();
-            std::cout << " | " << std::setw(10) << result.getLocation();
-            std::cout << std::left << " | " << std::setw(42) << (result.getNotes().empty() ? "" : result.getNotes())
-                    << std::right;
-            std::cout << " |" << std::endl;
+            std::cout << COLOR_LINE << "| " << COLOR_SWM << std::setw(17) << result.getSwm() << COLOR_NONE;
+            std::cout << COLOR_LINE << " | " << COLOR_LOC << std::setw(10) << result.getLocation() << COLOR_NONE;
+            std::cout << COLOR_LINE << " | " << COLOR_NOTE << std::left << std::setw(42)
+                      << (result.getNotes().empty() ? "" : result.getNotes()) << std::right << COLOR_NONE;
+            std::cout << COLOR_LINE << " |" << COLOR_NONE << std::endl;
         }
-        std::cout << breakLine << std::endl;
+        std::cout << COLOR_LINE << breakLine << COLOR_NONE << std::endl;
 
-        std::cout << "Znaleziono: " << results.size() << std::endl;
+        std::cout << COLOR_INFO << "Found " << results.size() << " records." << COLOR_NONE << std::endl;
     }
 
 
