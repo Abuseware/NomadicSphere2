@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "-pipe -march=core2 -mtune=generic")
 set(CMAKE_CXX_FLAGS_RELEASE "-Ofast")
-set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-s")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-O -s")
 
 if (WIN32 OR MINGW)
     add_compile_definitions(PATH_SEPARATOR='\\\\')

@@ -24,6 +24,8 @@
  */
 
 #include <algorithm>
+#include <locale>
+#include <codecvt>
 
 #include "Database.h"
 
@@ -31,25 +33,27 @@ Database::Database(const std::string fileName) {
     parseFile(fileName);
 }
 
-Image Database::parseLine(const std::string location, const std::string line) {
-    std::string swm, notes;
+Image Database::parseLine(const std::wstring location, const std::wstring line) {
+    std::wstring swm, notes;
 
     unsigned long split = line.find('_');
-    if (split != std::string::npos) {
+    if (split != std::wstring::npos) {
         swm = line.substr(0L, split);
         notes = line.substr(split + 1UL);
         std::replace(notes.begin(), notes.end(), '-', ' ');
         std::replace(notes.begin(), notes.end(), '_', ';');
     } else {
         swm = line;
-        notes = "";
+        notes = L"";
     }
 
     return Image(swm, notes, location);
 }
 
 bool Database::parseFile(const std::string fileName) {
-    auto file = std::ifstream(fileName);
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
+    auto file = std::wifstream(fileName);
 
     if (!file) {
         return false;
@@ -58,10 +62,10 @@ bool Database::parseFile(const std::string fileName) {
     unsigned long splitPath = fileName.rfind(PATH_SEPARATOR);
     unsigned long splitExt = fileName.rfind('.');
 
-    std::string location = fileName.substr(splitPath + 1, splitExt - splitPath - 1);
+    std::wstring location = converter.from_bytes(fileName.substr(splitPath + 1, splitExt - splitPath - 1));
 
 
-    std::string line;
+    std::wstring line;
 
     while (std::getline(file, line)) {
         line = line.substr(0, line.rfind('\r'));
@@ -72,11 +76,11 @@ bool Database::parseFile(const std::string fileName) {
     return true;
 }
 
-std::vector<Image> Database::findImage(std::string swm) {
+std::vector<Image> Database::findImage(std::wstring swm) {
     std::vector<Image> results;
 
     for (auto &img : imageList) {
-        if (img.getSwm().find(swm) != std::string::npos) {
+        if (img.getSwm().find(swm) != std::wstring::npos) {
             results.push_back(img);
         }
     }
@@ -86,4 +90,8 @@ std::vector<Image> Database::findImage(std::string swm) {
 
 unsigned long Database::size() {
     return imageList.size();
+}
+
+void Database::clear() {
+    imageList.clear();
 }

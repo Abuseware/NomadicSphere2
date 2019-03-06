@@ -32,33 +32,33 @@ Image::Image() {
     this->location = nullptr;
 }
 
-Image::Image(const std::string swm, const std::string notes, const std::string location) {
+Image::Image(const std::wstring swm, const std::wstring notes, const std::wstring location) {
     this->swm = swm;
     this->notes = notes;
     this->location = location;
 }
 
-const std::string &Image::getSwm() const {
+const std::wstring &Image::getSwm() const {
     return swm;
 }
 
-void Image::setSwm(const std::string &swm) {
+void Image::setSwm(const std::wstring &swm) {
     Image::swm = swm;
 }
 
-const std::string &Image::getNotes() const {
+const std::wstring &Image::getNotes() const {
     return notes;
 }
 
-void Image::setNotes(const std::string &notes) {
+void Image::setNotes(const std::wstring &notes) {
     Image::notes = notes;
 }
 
-const std::string &Image::getLocation() const {
+const std::wstring &Image::getLocation() const {
     return location;
 }
 
-void Image::setLocation(const std::string &location) {
+void Image::setLocation(const std::wstring &location) {
     Image::location = location;
 }
 

@@ -10,26 +10,26 @@
 
 class Image {
 private:
-    std::string swm;
-    std::string notes;
-    std::string location;
+    std::wstring swm;
+    std::wstring notes;
+    std::wstring location;
 
 public:
-    const std::string &getSwm() const;
+    const std::wstring &getSwm() const;
 
-    void setSwm(const std::string &swm);
+    void setSwm(const std::wstring &swm);
 
-    const std::string &getNotes() const;
+    const std::wstring &getNotes() const;
 
-    void setNotes(const std::string &notes);
+    void setNotes(const std::wstring &notes);
 
-    const std::string &getLocation() const;
+    const std::wstring &getLocation() const;
 
-    void setLocation(const std::string &location);
+    void setLocation(const std::wstring &location);
 
     Image();
 
-    Image(std::string swm, std::string notes, std::string location);
+    Image(std::wstring swm, std::wstring notes, std::wstring location);
 
     static bool compare(Image a, Image b);
 
