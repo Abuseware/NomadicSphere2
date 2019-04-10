@@ -20,11 +20,11 @@ public:
 
     explicit Database(std::string fileName);
 
-    Image parseLine(std::wstring location, std::wstring line);
+    Image parseLine(std::string location, std::string line);
 
     bool parseFile(std::string fileName);
 
-    std::vector<Image> findImage(std::wstring swm);
+    std::vector<Image> findImage(std::string swm);
 
     void clear();
 
