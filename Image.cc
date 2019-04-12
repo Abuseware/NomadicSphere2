@@ -32,7 +32,7 @@ Image::Image() {
     this->location = nullptr;
 }
 
-Image::Image(const std::string swm, const std::string notes, const std::string location) {
+Image::Image(const std::string &swm, const std::string &notes, const std::string &location) {
     this->swm = swm;
     this->notes = notes;
     this->location = location;
@@ -43,7 +43,7 @@ const std::string &Image::getSwm() const {
 }
 
 void Image::setSwm(const std::string &swm) {
-    Image::swm = swm;
+    this->swm = swm;
 }
 
 const std::string &Image::getNotes() const {
@@ -51,7 +51,7 @@ const std::string &Image::getNotes() const {
 }
 
 void Image::setNotes(const std::string &notes) {
-    Image::notes = notes;
+    this->notes = notes;
 }
 
 const std::string &Image::getLocation() const {
@@ -59,9 +59,9 @@ const std::string &Image::getLocation() const {
 }
 
 void Image::setLocation(const std::string &location) {
-    Image::location = location;
+    this->location = location;
 }
 
-bool Image::compare(Image a, Image b) {
+bool Image::compare(const Image &a, const Image &b) {
     return (a.getSwm() < b.getSwm());
 }

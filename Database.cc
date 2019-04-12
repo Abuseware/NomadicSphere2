@@ -24,16 +24,19 @@
  */
 
 #include <algorithm>
+#include <thread>
+#include <mutex>
 
 #include "Database.h"
 
-Database::Database(const std::string fileName) {
+
+Database::Database(const std::string &fileName) {
     parseFile(fileName);
 }
 
-Image Database::parseLine(const std::string location, const std::string line) {
+Image Database::parseLine(const std::string &location, const std::string &line) {
     std::string swm = line;
-    std::string notes = "";
+    std::string notes;
 
     unsigned long split = line.find('_');
     if (split != std::string::npos) {
@@ -46,7 +49,7 @@ Image Database::parseLine(const std::string location, const std::string line) {
     return Image(swm, notes, location);
 }
 
-bool Database::parseFile(const std::string fileName) {
+bool Database::parseFile(const std::string &fileName) {
     auto file = std::ifstream(fileName);
 
     if (!file) {
@@ -69,12 +72,46 @@ bool Database::parseFile(const std::string fileName) {
     return true;
 }
 
-std::vector<Image> Database::findImage(std::string swm) {
-    std::vector<Image> results;
+void Database::findImageThread(const std::vector<Image> &source, std::vector<Image> &results, std::mutex &resultsLock,
+                               const unsigned long &begin, const unsigned long &end, const std::string &swm) {
 
-    for (auto &img : imageList) {
-        if (img.getSwm().find(swm) != std::string::npos) {
-            results.push_back(img);
+    for (unsigned long i = begin; i != end; i++) {
+        if (source[i].getSwm().find(swm) != std::string::npos){
+            resultsLock.lock();
+            results.push_back(source[i]);
+            resultsLock.unlock();
+        }
+    }
+}
+
+std::vector<Image> Database::findImage(const std::string &swm) {
+    auto nproc = std::thread::hardware_concurrency();
+    std::vector<std::thread> threads;
+    std::vector<Image> results;
+    std::mutex resultsLock;
+
+    if (nproc > 0){
+        for (unsigned int i = 0; i < nproc; i++) {
+            auto size = imageList.size();
+            unsigned long begin = (size / nproc) * i;
+            unsigned long end;
+            if (i == nproc - 1){
+                end = size;
+            } else{
+                end = (size / nproc) * (i + 1);
+            }
+            threads.emplace_back(std::thread(Database::findImageThread, std::ref(imageList), std::ref(results),
+                                             std::ref(resultsLock), begin, end, swm));
+        }
+
+        for (auto &t : threads) {
+            t.join();
+        }
+    } else{
+        for (auto &img : imageList) {
+            if (img.getSwm().find(swm) != std::string::npos){
+                results.push_back(img);
+            }
         }
     }
 

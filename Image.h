@@ -29,9 +29,9 @@ public:
 
     Image();
 
-    Image(std::string swm, std::string notes, std::string location);
+    Image(const std::string &swm, const std::string &notes, const std::string &location);
 
-    static bool compare(Image a, Image b);
+    static bool compare(const Image &a, const Image &b);
 
 
 };

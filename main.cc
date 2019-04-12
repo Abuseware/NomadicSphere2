@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <chrono>
 
 #include <algorithm>
 
@@ -114,9 +115,13 @@ int main() {
             continue;
         }
 
+        auto t1 = std::chrono::high_resolution_clock::now();
         auto results = db.findImage(query);
+        auto t2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> time = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
 
-        std::cout << COLOR_INFO << STR_INFO_RESULTS << results.size() << COLOR_NONE << std::endl;
+        std::cout << COLOR_INFO << STR_INFO_RESULTS << results.size() << " (" << time.count() << "s)" << COLOR_NONE
+                  << std::endl;
 
         if (!results.empty()) {
             std::cout << COLOR_LINE << breakLine << COLOR_NONE << std::endl;
