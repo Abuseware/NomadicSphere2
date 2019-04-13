@@ -100,8 +100,8 @@ std::vector<Image> Database::findImage(const std::string &swm) {
             } else{
                 end = (size / nproc) * (i + 1);
             }
-            threads.emplace_back(std::thread(Database::findImageThread, std::ref(imageList), std::ref(results),
-                                             std::ref(resultsLock), begin, end, swm));
+            threads.emplace_back(Database::findImageThread, std::ref(imageList), std::ref(results),
+                                             std::ref(resultsLock), begin, end, swm);
         }
 
         for (auto &t : threads) {
