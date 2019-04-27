@@ -63,5 +63,16 @@ void Image::setLocation(const std::string &location) {
 }
 
 bool Image::compare(const Image &a, const Image &b) {
-    return (a.getSwm() < b.getSwm());
+    if (a.swm < b.swm){
+        return true;
+    } else if (a.swm == b.swm){
+        if (a.location < b.location){
+            return true;
+        } else if (a.location == b.location){
+            if (a.notes < b.notes){
+                return true;
+            }
+        }
+    }
+    return false;
 }

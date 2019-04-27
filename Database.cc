@@ -39,7 +39,7 @@ Image Database::parseLine(const std::string &location, const std::string &line) 
     std::string notes;
 
     unsigned long split = line.find('_');
-    if (split != std::string::npos) {
+    if (split != std::string::npos){
         swm = line.substr(0, split);
         notes = line.substr(split + 1);
         std::replace(notes.begin(), notes.end(), '-', ' ');
@@ -52,7 +52,7 @@ Image Database::parseLine(const std::string &location, const std::string &line) 
 bool Database::parseFile(const std::string &fileName) {
     auto file = std::ifstream(fileName);
 
-    if (!file) {
+    if (!file){
         return false;
     }
 
@@ -66,7 +66,7 @@ bool Database::parseFile(const std::string &fileName) {
     while (std::getline(file, line)) {
         line = line.substr(0, line.rfind('\r'));
         if (!line.empty())
-            imageList.push_back(parseLine(location, line));
+            imageList.emplace_back(parseLine(location, line));
     }
 
     return true;
@@ -78,9 +78,10 @@ void Database::findImageThread(const std::vector<Image> &source, std::vector<Ima
     for (unsigned long i = begin; i != end; i++) {
         if (source[i].getSwm().find(swm) != std::string::npos){
             resultsLock.lock();
-            results.push_back(source[i]);
+            results.emplace_back(source[i]);
             resultsLock.unlock();
         }
+        //std::this_thread::yield();
     }
 }
 
@@ -101,7 +102,7 @@ std::vector<Image> Database::findImage(const std::string &swm) {
                 end = (size / nproc) * (i + 1);
             }
             threads.emplace_back(Database::findImageThread, std::ref(imageList), std::ref(results),
-                                             std::ref(resultsLock), begin, end, swm);
+                                 std::ref(resultsLock), begin, end, swm);
         }
 
         for (auto &t : threads) {
@@ -110,10 +111,12 @@ std::vector<Image> Database::findImage(const std::string &swm) {
     } else{
         for (auto &img : imageList) {
             if (img.getSwm().find(swm) != std::string::npos){
-                results.push_back(img);
+                results.emplace_back(img);
             }
         }
     }
+
+    std::stable_sort(results.begin(), results.end(), Image::compare);
 
     return results;
 }
