@@ -40,8 +40,8 @@ Image Database::parseLine(const std::string &location, const std::string &line) 
 
     unsigned long split = line.find('_');
     if (split != std::string::npos){
-        swm = line.substr(0, split);
-        notes = line.substr(split + 1);
+        swm = line.substr(0UL, split);
+        notes = line.substr(split + 1UL);
         std::replace(notes.begin(), notes.end(), '-', ' ');
         std::replace(notes.begin(), notes.end(), '_', ';');
     }

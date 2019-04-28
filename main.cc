@@ -32,11 +32,13 @@
 
 #include <cstring>
 
-#include <dirent.h>
-
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <windows.h>
+
+#else
+
+#include <dirent.h>
 
 #endif
 
@@ -44,17 +46,17 @@
 #include "Database.h"
 #include "locale_en.h"
 
-#define COLOR_NONE "\e[0m"
-#define COLOR_ERROR "\e[91m"
-#define COLOR_INFO "\e[93m"
-#define COLOR_QUERY "\e[32m"
+#define COLOR_NONE "\x1b[0m"
+#define COLOR_ERROR "\x1b[91m"
+#define COLOR_INFO "\x1b[93m"
+#define COLOR_QUERY "\x1b[32m"
 
-#define COLOR_LINE "\e[37m"
+#define COLOR_LINE "\x1b[37m"
 
-#define COLOR_SWM "\e[31m"
-#define COLOR_MATCH "\e[91m"
-#define COLOR_LOC "\e[32m"
-#define COLOR_NOTE "\e[93m"
+#define COLOR_SWM "\x1b[31m"
+#define COLOR_MATCH "\x1b[91m"
+#define COLOR_LOC "\x1b[32m"
+#define COLOR_NOTE "\x1b[93m"
 
 #define DATA_DIR "data"
 
@@ -84,14 +86,14 @@ bool readDB() {
     DIR *dir;
     struct dirent *ent;
 
-    if ((dir = opendir(DATA_DIR)) != nullptr) {
+    if ((dir = opendir(DATA_DIR)) != nullptr){
         while ((ent = readdir(dir)) != nullptr) {
-            if (ent->d_name[0] != '.') {
+            if (ent->d_name[0] != '.'){
                 files.emplace_back(std::string(DATA_DIR) + PATH_SEPARATOR + ent->d_name);
             }
         }
         closedir(dir);
-    } else {
+    } else{
         std::cout << COLOR_ERROR << STR_ERROR_DIR << COLOR_NONE << std::endl;
         return false;
     }
@@ -110,6 +112,21 @@ bool readDB() {
 }
 
 int main() {
+#if defined(_WIN32) || defined(_WIN64)
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+#if defined(_MSC_VER)
+        auto output = GetStdHandle(STD_OUTPUT_HANDLE);
+        if(output == INVALID_HANDLE_VALUE) return 1;
+
+        DWORD oldmode, newmode;
+        if(!GetConsoleMode(output, &oldmode)) return 1;
+
+        newmode = ENABLE_VIRTUAL_TERMINAL_PROCESSING | ENABLE_PROCESSED_OUTPUT;
+        if(!SetConsoleMode(output, newmode)) return 1;
+#endif
+#endif
 
     std::string breakLine = std::string(79, '-');
 

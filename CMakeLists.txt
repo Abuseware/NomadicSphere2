@@ -7,6 +7,10 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+if (MINGW)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -municode")
+endif ()
+
 if(WIN32 OR MINGW)
     add_compile_definitions(PATH_SEPARATOR='\\\\')
 else()
