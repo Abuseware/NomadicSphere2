@@ -35,6 +35,7 @@
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <windows.h>
+#pragma execution_character_set("utf-8")
 
 #else
 
@@ -77,7 +78,7 @@ bool readDB() {
 
     do {
         if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_NORMAL) || (ffd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)){
-            files.emplace_back(std::string(DATA_DIR) + PATH_SEPARATOR + ffd.cFileName);
+            files.emplace_back(std::string(DATA_DIR) + '/' + ffd.cFileName);
         }
     } while (FindNextFile(hFind, &ffd) != 0);
 
@@ -89,7 +90,7 @@ bool readDB() {
     if ((dir = opendir(DATA_DIR)) != nullptr){
         while ((ent = readdir(dir)) != nullptr) {
             if (ent->d_name[0] != '.'){
-                files.emplace_back(std::string(DATA_DIR) + PATH_SEPARATOR + ent->d_name);
+                files.emplace_back(std::string(DATA_DIR) + '/' + ent->d_name);
             }
         }
         closedir(dir);

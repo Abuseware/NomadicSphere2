@@ -56,7 +56,7 @@ bool Database::parseFile(const std::string &fileName) {
         return false;
     }
 
-    unsigned long splitPath = fileName.rfind(PATH_SEPARATOR);
+    unsigned long splitPath = fileName.rfind('/');
     unsigned long splitExt = fileName.rfind('.');
 
     std::string location = fileName.substr(splitPath + 1, splitExt - splitPath - 1);
