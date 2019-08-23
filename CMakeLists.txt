@@ -17,5 +17,15 @@ endif ()
 #    add_compile_definitions(PATH_SEPARATOR='/')
 #endif()
 
+
 project(ImageSearch2)
 add_executable(${PROJECT_NAME} main.cc Image.cc Database.cc)
+
+#Catch2 test
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    find_package("Catch2" REQUIRED)
+    add_executable(run_test test.cc Image.cc Database.cc)
+    target_link_libraries(run_test Catch2::Catch2)
+    file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/data")
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/test_data/1.txt" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/data")
+endif ()
