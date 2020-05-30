@@ -26,7 +26,6 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
-#include <iostream>
 
 #include "Database.h"
 
@@ -68,8 +67,8 @@ bool Database::parseFile(const std::string &fileName) {
         return false;
     }
 
-    unsigned long splitPath = fileName.rfind('/');
-    unsigned long splitExt = fileName.rfind('.');
+    size_t splitPath = fileName.rfind('/');
+    size_t splitExt = fileName.rfind('.');
 
     std::string location = fileName.substr(splitPath + 1, splitExt - splitPath - 1);
 
@@ -106,8 +105,8 @@ std::vector<Image> Database::findImage(const std::string &swm) {
     if (nproc > 0){
         for (unsigned int i = 0; i < nproc; i++) {
             auto size = imageList.size();
-            unsigned long begin = (size / nproc) * i;
-            unsigned long end;
+            size_t begin = (size / nproc) * i;
+            size_t end;
             if (i == nproc - 1){
                 end = size;
             } else{
@@ -133,7 +132,7 @@ std::vector<Image> Database::findImage(const std::string &swm) {
     return results;
 }
 
-unsigned long Database::size() {
+size_t Database::size() {
     return imageList.size();
 }
 

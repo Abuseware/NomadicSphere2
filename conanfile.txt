@@ -1,0 +1,12 @@
+[requires]
+catch2/2.12.1
+ncurses/6.1@conan/stable
+[generators]
+cmake
+
+[options]
+
+[imports]
+bin, *.dll -> ./bin
+lib, *.dylib* -> ./bin
+lib, *.so* -> ./bin

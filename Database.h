@@ -32,7 +32,7 @@ public:
 
     void clear();
 
-    unsigned long size();
+    size_t size();
 
 
 };

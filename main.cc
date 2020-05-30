@@ -183,11 +183,11 @@ int main() {
 
 
                 std::cout << COLOR_LINE << "| " << COLOR_SWM
-                          << std::setw(17 + (strlen(COLOR_MATCH) + strlen(COLOR_SWM))) << colorized << COLOR_NONE;
+                          << std::setw(17 + (int)(strlen(COLOR_MATCH) + strlen(COLOR_SWM))) << colorized << COLOR_NONE;
                 std::cout << COLOR_LINE << " | " << COLOR_LOC << std::setw(10) << result.getLocation()
                           << COLOR_NONE;
                 std::cout << COLOR_LINE << " | " << COLOR_NOTE << std::left << std::setw(42)
-                          << (result.getNotes().empty() ? "" : result.getNotes().substr(0, 41)) << std::right
+                          << (result.getNotes().empty() ? std::string() : result.getNotes().substr(0, 41)) << std::right
                           << COLOR_NONE;
                 std::cout << COLOR_LINE << " |" << COLOR_NONE << std::endl;
             }
