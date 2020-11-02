@@ -1,6 +1,5 @@
 [requires]
 catch2/2.12.1
-ncurses/6.1@conan/stable
 [generators]
 cmake
 
