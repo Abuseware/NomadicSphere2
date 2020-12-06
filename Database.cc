@@ -42,17 +42,6 @@ Image Database::parseLine(const std::string &location, const std::string &line) 
     if (split != std::string::npos){
         swm = line.substr(0UL, split);
         notes = line.substr(split + 1UL);
-        std::string tmp;
-        /*size_t last_i = 0;
-        for(size_t i = 0; i < notes.size(); i = notes.find('_', last_i + 1)) {
-
-            if(i == std::string::npos) break;
-
-            if(last_i != i) tmp += notes.substr(last_i, i) + "; ";
-            std::cerr << "i = " << i << "; last_i = " << last_i << std::endl;
-            last_i = i;
-        }*/
-        notes = tmp;
         std::replace(notes.begin(), notes.end(), '-', ' ');
         std::replace(notes.begin(), notes.end(), '_', ';');
     }

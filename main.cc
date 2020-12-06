@@ -29,6 +29,7 @@
 #include <chrono>
 
 #include <algorithm>
+#include <filesystem>
 
 #include <cstring>
 
@@ -36,10 +37,6 @@
 
 #include <windows.h>
 #pragma execution_character_set("utf-8")
-
-#else
-
-#include <dirent.h>
 
 #endif
 
@@ -66,39 +63,16 @@ Database db;
 bool readDB() {
     std::vector<std::string> files;
 
-#if defined(_WIN32) || defined(_WIN64)
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = INVALID_HANDLE_VALUE;
-
-    hFind = FindFirstFile(DATA_DIR "\\*", &ffd);
-    if (hFind == INVALID_HANDLE_VALUE){
+    std::filesystem::path dataPath = std::filesystem::path(DATA_DIR);
+    if(!std::filesystem::is_directory(dataPath)){
         std::cout << COLOR_ERROR << STR_ERROR_DIR << COLOR_NONE << std::endl;
         return false;
     }
 
-    do {
-        if ((ffd.dwFileAttributes & FILE_ATTRIBUTE_NORMAL) || (ffd.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE)){
-            files.emplace_back(std::string(DATA_DIR) + '/' + ffd.cFileName);
-        }
-    } while (FindNextFile(hFind, &ffd) != 0);
-
-    FindClose(hFind);
-#else
-    DIR *dir;
-    struct dirent *ent;
-
-    if ((dir = opendir(DATA_DIR)) != nullptr){
-        while ((ent = readdir(dir)) != nullptr) {
-            if (ent->d_name[0] != '.'){
-                files.emplace_back(std::string(DATA_DIR) + '/' + ent->d_name);
-            }
-        }
-        closedir(dir);
-    } else{
-        std::cout << COLOR_ERROR << STR_ERROR_DIR << COLOR_NONE << std::endl;
-        return false;
+    for(auto &path : std::filesystem::directory_iterator(dataPath)) {
+        files.emplace_back(path.path().string());
+        std::cout << path.path() << std::endl;
     }
-#endif
 
     std::sort(files.begin(), files.end());
     for (auto &file : files) {
